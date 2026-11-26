@@ -18,12 +18,10 @@ function handleLogin(event) {
     return;
   }
 
-  // Simpan nama & kelas murid ke memori sementara
   currentStudent.nama = namaInput;
   currentStudent.kelas = kelasInput;
   errorMsg.textContent = '';
 
-  // Tampilkan sapaan personal di halaman sambutan & header
   document.getElementById('welcome-title').textContent = `Assalamu'alaikum, ${currentStudent.nama}!`;
   document.getElementById('welcome-badge').textContent = `🎒 ${currentStudent.kelas}`;
   
@@ -50,7 +48,83 @@ function goToScreen(screenId) {
 }
 
 // ==========================================
-// 1. SEJARAH NABI MUHAMMAD SAW (Ambil dari Python API)
+// DATA MATERI & QUIZ (SIAP PAKAI DI VERCEL)
+// ==========================================
+const DEFAULT_SEJARAH = [
+  {
+    id: 1,
+    judul: "1. Kelahiran Sang Nabi",
+    ikon: "🌙",
+    isi: "Nabi Muhammad SAW lahir di Kota Makkah pada hari Senin, 12 Rabiul Awal Tahun Gajah. Ayahnya bernama Abdullah dan ibunya bernama Aminah. Kelahiran beliau membawa cahaya rahmat bagi seluruh alam semesta."
+  },
+  {
+    id: 2,
+    judul: "2. Masa Kecil Nabi",
+    ikon: "🐑",
+    isi: "Sejak kecil Nabi Muhammad SAW sudah menjadi anak yatim piatu. Beliau diasuh oleh kakeknya Abdul Muthalib, lalu pamannya Abu Thalib. Sejak kecil beliau rajin membantu menggembalakan kambing dan dikenal sangat jujur."
+  },
+  {
+    id: 3,
+    judul: "3. Pemuda Al-Amin",
+    ikon: "🤝",
+    isi: "Saat beranjak dewasa, penduduk Makkah memberi beliau gelar 'Al-Amin' yang artinya orang yang dapat dipercaya. Beliau berdagang dengan jujur hingga ke negeri Syam dan sangat dicintai masyarakat."
+  },
+  {
+    id: 4,
+    judul: "4. Wahyu Pertama",
+    ikon: "📖",
+    isi: "Pada usia 40 tahun, saat menyendiri di Gua Hira, Malaikat Jibril datang menyampaikan wahyu pertama yaitu Surah Al-Alaq ayat 1–5 ('Iqra' yang artinya Bacalah). Sejak saat itu beliau resmi diangkat menjadi Nabi dan Rasul."
+  },
+  {
+    id: 5,
+    judul: "5. Dakwah Pertama (Sembunyi-sembunyi)",
+    ikon: "🤫",
+    isi: "Selama 3 tahun pertama, Nabi berdakwah secara sembunyi-sembunyi kepada keluarga dan sahabat terdekat. Orang-orang pertama yang masuk Islam disebut Assabiqunal Awwalun, seperti Khadijah, Ali bin Abi Thalib, dan Abu Bakar."
+  },
+  {
+    id: 6,
+    judul: "6. Dakwah Terang-terangan",
+    ikon: "📢",
+    isi: "Setelah turun perintah Allah SWT, Nabi mulai berdakwah secara terang-terangan di Bukit Shafa. Meski mendapat banyak ejekan dan rintangan dari kaum Quraisy, beliau tetap sabar dan tidak pernah membalas keburukan dengan keburukan."
+  },
+  {
+    id: 7,
+    judul: "7. Perjuangan Dakwah dan Hijrah",
+    ikon: "🐪",
+    isi: "Karena tekanan di Makkah semakin berat, Allah memerintahkan Nabi dan kaum Muslimin untuk hijrah (pindah) ke Kota Madinah. Di Madinah, beliau disambut hangat dengan syair Thala'al Badru dan membangun masyarakat Islam yang damai."
+  }
+];
+
+const DEFAULT_QUIZ = [
+  {
+    tanya: "Apa arti gelar 'Al-Amin' yang diberikan kepada Nabi Muhammad SAW?",
+    pilihan: ["Orang yang kaya raya", "Orang yang dapat dipercaya", "Orang yang paling kuat", "Orang yang suka berpergian"],
+    jawaban: 1
+  },
+  {
+    tanya: "Di gua manakah Nabi Muhammad SAW menerima wahyu pertama?",
+    pilihan: ["Gua Tsur", "Gua Hira", "Gua Kahfi", "Gua Uhud"],
+    jawaban: 1
+  },
+  {
+    tanya: "Surah apa yang pertama kali diturunkan kepada Nabi Muhammad SAW?",
+    pilihan: ["Al-Fatihah", "Al-Ikhlas", "Al-Alaq ayat 1-5", "An-Nas"],
+    jawaban: 2
+  },
+  {
+    tanya: "Ke kota manakah Nabi Muhammad SAW dan umat Islam melakukan hijrah?",
+    pilihan: ["Mesir", "Syam", "Thaif", "Madinah"],
+    jawaban: 3
+  },
+  {
+    tanya: "Siapakah sahabat sekaligus paman yang mengasuh Nabi setelah kakeknya wafat?",
+    pilihan: ["Abu Lahab", "Abu Thalib", "Abu Jahal", "Hamzah"],
+    jawaban: 1
+  }
+];
+
+// ==========================================
+// 1. SEJARAH NABI MUHAMMAD SAW
 // ==========================================
 let dataSejarah = [];
 
@@ -61,10 +135,11 @@ async function openSejarah() {
   if (dataSejarah.length === 0) {
     try {
       const response = await fetch('/api/sejarah');
+      if (!response.ok) throw new Error('API tidak merespons');
       dataSejarah = await response.json();
     } catch (err) {
-      listContainer.innerHTML = '<p>Gagal memuat materi dari server.</p>';
-      return;
+      // Gunakan data lokal jika API serverless tidak aktif
+      dataSejarah = DEFAULT_SEJARAH;
     }
   }
 
@@ -90,7 +165,7 @@ function showBabDetail(index, clickedBtn) {
 }
 
 // ==========================================
-// 2. QUIZ CERDAS CERMAT (Ambil dari Python API)
+// 2. QUIZ CERDAS CERMAT
 // ==========================================
 let quizList = [];
 let currentQuizIdx = 0;
@@ -102,8 +177,14 @@ async function openQuiz() {
   quizScore = 0;
 
   if (quizList.length === 0) {
-    const res = await fetch('/api/quiz');
-    quizList = await res.json();
+    try {
+      const res = await fetch('/api/quiz');
+      if (!res.ok) throw new Error('API tidak merespons');
+      quizList = await res.json();
+    } catch (err) {
+      // Gunakan soal quiz lokal jika API serverless tidak aktif
+      quizList = DEFAULT_QUIZ;
+    }
   }
   renderQuizQuestion();
 }
@@ -169,7 +250,6 @@ function setupWord() {
   document.getElementById('game-clue').textContent = current.clue;
   document.getElementById('game-feedback').textContent = '';
 
-  // Buat kotak kosong sesuai jumlah huruf
   const slotsContainer = document.getElementById('answer-slots');
   slotsContainer.innerHTML = '';
   for (let i = 0; i < current.word.length; i++) {
@@ -179,7 +259,6 @@ function setupWord() {
     slotsContainer.appendChild(div);
   }
 
-  // Acak huruf
   const shuffled = current.word.split('').sort(() => Math.random() - 0.5);
   const bank = document.getElementById('letter-bank');
   bank.innerHTML = '';
