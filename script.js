@@ -226,13 +226,14 @@ function submitQuizAnswer(selectedIdx) {
 }
 
 // ==========================================
-// 3. PERMAINAN EDUKATIF: TEBAK KATA ISLAMI
+// 3. PERMAINAN EDUKATIF: TEBAK KATA ISLAMI (5 SOAL)
 // ==========================================
 const gameWords = [
   { word: "ALAMIN", clue: "Gelar Nabi Muhammad SAW yang artinya orang yang dapat dipercaya" },
   { word: "HIJRAH", clue: "Perpindahan Nabi Muhammad SAW dari Kota Makkah ke Madinah" },
   { word: "IQRA", clue: "Kata pertama dalam wahyu pertama yang artinya 'Bacalah'" },
-  { word: "JIBRIL", clue: "Malaikat yang menyampaikan wahyu Allah kepada para Nabi" }
+  { word: "JIBRIL", clue: "Malaikat yang menyampaikan wahyu Allah kepada para Nabi" },
+  { word: "MAKKAH", clue: "Kota tempat kelahiran Nabi Muhammad SAW" }
 ];
 
 let wordIdx = 0;
@@ -245,6 +246,41 @@ function openGame() {
 }
 
 function setupWord() {
+  const gameCard = document.querySelector('#screen-game .game-card');
+
+  // Jika sudah menyelesaikan ke-5 soal, tampilkan layar selesai
+  if (wordIdx >= gameWords.length) {
+    gameCard.innerHTML = `
+      <div style="text-align:center; padding: 20px 0;">
+        <div style="font-size: 3.8rem;">🎊🌟🎮</div>
+        <h3>MasyaAllah, Hebat Sekali ${currentStudent.nama} (${currentStudent.kelas})!</h3>
+        <p style="font-size:1.15rem; margin: 14px 0;">Kamu telah berhasil menyelesaikan semua <strong>${gameWords.length} tantangan</strong> Tebak Kata Islami!</p>
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="restartGame()">Main Game Lagi 🔄</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Kembalikan struktur awal kartu game jika dimainkan ulang
+  if (!document.getElementById('game-clue')) {
+    gameCard.innerHTML = `
+      <h2>🎮 Game Tebak Kata Islami</h2>
+      <p>Susun huruf-huruf acak di bawah ini menjadi kata yang benar sesuai petunjuk!</p>
+      <div class="game-clue-box">
+        <strong>Soal ${wordIdx + 1} dari ${gameWords.length} — Petunjuk:</strong> <span id="game-clue"></span>
+      </div>
+      <div id="answer-slots" class="word-slots"></div>
+      <div id="letter-bank" class="letter-buttons"></div>
+      <p id="game-feedback" class="feedback-msg"></p>
+      <div class="game-controls">
+        <button class="btn btn-small" onclick="resetCurrentWord()">🔄 Ulangi Kata</button>
+        <button class="btn btn-primary" onclick="nextWord()">Kata Berikutnya ➡️</button>
+      </div>
+    `;
+  } else {
+    document.querySelector('.game-clue-box strong').textContent = `Soal ${wordIdx + 1} dari ${gameWords.length} — Petunjuk:`;
+  }
+
   const current = gameWords[wordIdx];
   userGuess = [];
   document.getElementById('game-clue').textContent = current.clue;
@@ -283,7 +319,7 @@ function pickLetter(char, btn) {
     const feedback = document.getElementById('game-feedback');
     if (userGuess.join('') === targetWord) {
       feedback.style.color = '#2e7d32';
-      feedback.textContent = '🎉 MasyaAllah Benar! Kamu Pintar Sekali!';
+      feedback.textContent = '🎉 MasyaAllah Benar! Klik Kata Berikutnya ya!';
     } else {
       feedback.style.color = '#c62828';
       feedback.textContent = '😅 Ups, susunannya belum tepat. Klik Ulangi Kata ya!';
@@ -296,6 +332,11 @@ function resetCurrentWord() {
 }
 
 function nextWord() {
-  wordIdx = (wordIdx + 1) % gameWords.length;
+  wordIdx++;
+  setupWord();
+}
+
+function restartGame() {
+  wordIdx = 0;
   setupWord();
 }
