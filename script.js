@@ -226,7 +226,7 @@ function submitQuizAnswer(selectedIdx) {
 }
 
 // ==========================================
-// 3. PERMAINAN EDUKATIF: TEBAK KATA ISLAMI (5 SOAL)
+// 3. PERMAINAN EDUKATIF: TEBAK KATA ISLAMI (5 SOAL + SKOR)
 // ==========================================
 const gameWords = [
   { word: "ALAMIN", clue: "Gelar Nabi Muhammad SAW yang artinya orang yang dapat dipercaya" },
@@ -238,24 +238,43 @@ const gameWords = [
 
 let wordIdx = 0;
 let userGuess = [];
+let gameScore = 0;
+let isCurrentWordSolved = false;
 
 function openGame() {
   goToScreen('screen-game');
   wordIdx = 0;
+  gameScore = 0;
   setupWord();
 }
 
 function setupWord() {
   const gameCard = document.querySelector('#screen-game .game-card');
 
-  // Jika sudah menyelesaikan ke-5 soal, tampilkan layar selesai
+  // Jika sudah melewati soal ke-5, tampilkan hasil akhir sesuai skor
   if (wordIdx >= gameWords.length) {
+    const nilai = Math.round((gameScore / gameWords.length) * 100);
+    let emojiHasil = "🎊🌟🎮";
+    let judulHasil = `MasyaAllah, Hebat Sekali ${currentStudent.nama} (${currentStudent.kelas})!`;
+    let pesanHasil = `Kamu berhasil menyusun <strong>${gameScore} dari ${gameWords.length}</strong> kata dengan benar!`;
+
+    if (gameScore === 0) {
+      emojiHasil = "💪📖😊";
+      judulHasil = `Tetap Semangat Belajar, ${currentStudent.nama} (${currentStudent.kelas})!`;
+      pesanHasil = `Belum ada kata yang tersusun tepat (<strong>0 dari ${gameWords.length}</strong>). Yuk baca kisah Nabi lagi lalu coba main ulang!`;
+    } else if (gameScore < gameWords.length) {
+      emojiHasil = "👏✨📚";
+      judulHasil = `Bagus Sekali, ${currentStudent.nama} (${currentStudent.kelas})!`;
+      pesanHasil = `Kamu berhasil menyusun <strong>${gameScore} dari ${gameWords.length}</strong> kata dengan benar. Yuk coba lagi agar dapat nilai 100!`;
+    }
+
     gameCard.innerHTML = `
       <div style="text-align:center; padding: 20px 0;">
-        <div style="font-size: 3.8rem;">🎊🌟🎮</div>
-        <h3>MasyaAllah, Hebat Sekali ${currentStudent.nama} (${currentStudent.kelas})!</h3>
-        <p style="font-size:1.15rem; margin: 14px 0;">Kamu telah berhasil menyelesaikan semua <strong>${gameWords.length} tantangan</strong> Tebak Kata Islami!</p>
-        <button class="btn btn-primary" style="margin-top:12px;" onclick="restartGame()">Main Game Lagi 🔄</button>
+        <div style="font-size: 3.8rem;">${emojiHasil}</div>
+        <h3>${judulHasil}</h3>
+        <p style="font-size:1.15rem; margin: 14px 0;">${pesanHasil}</p>
+        <p style="font-size:1.5rem; font-weight:800; color:${gameScore === 0 ? '#ef6c00' : '#2e7d32'};">Skor Game: ${nilai}</p>
+        <button class="btn btn-primary" style="margin-top:16px;" onclick="restartGame()">Main Game Lagi 🔄</button>
       </div>
     `;
     return;
@@ -283,6 +302,7 @@ function setupWord() {
 
   const current = gameWords[wordIdx];
   userGuess = [];
+  isCurrentWordSolved = false;
   document.getElementById('game-clue').textContent = current.clue;
   document.getElementById('game-feedback').textContent = '';
 
@@ -320,9 +340,13 @@ function pickLetter(char, btn) {
     if (userGuess.join('') === targetWord) {
       feedback.style.color = '#2e7d32';
       feedback.textContent = '🎉 MasyaAllah Benar! Klik Kata Berikutnya ya!';
+      if (!isCurrentWordSolved) {
+        gameScore++;
+        isCurrentWordSolved = true;
+      }
     } else {
       feedback.style.color = '#c62828';
-      feedback.textContent = '😅 Ups, susunannya belum tepat. Klik Ulangi Kata ya!';
+      feedback.textContent = '😅 Ups, susunannya salah! Klik Ulangi Kata untuk memperbaiki ya.';
     }
   }
 }
@@ -333,6 +357,12 @@ function resetCurrentWord() {
 
 function nextWord() {
   wordIdx++;
+  setupWord();
+}
+
+function restartGame() {
+  wordIdx = 0;
+  gameScore = 0;
   setupWord();
 }
 
