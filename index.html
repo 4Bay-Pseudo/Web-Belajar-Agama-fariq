@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sahabat Cilik - Belajar Agama Islam SD</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HALAMAN 0: ABSENSI / LOGIN MURID -->
+  <section id="screen-login" class="screen active">
+    <div class="card login-card">
+      <div class="floating-emoji">🎒✏️🌟</div>
+      <h2>Selamat Datang, Sahabat Cilik!</h2>
+      <p class="subtitle">Isi nama dan kelasmu dulu sebelum mulai belajar agama hari ini ya!</p>
+      
+      <form id="login-form" onsubmit="handleLogin(event)" class="login-form">
+        <div class="input-group">
+          <label for="nama-murid">👦👧 Nama Lengkap Murid</label>
+          <input type="text" id="nama-murid" placeholder="Contoh: Ahmad Fauzan" required autocomplete="off" />
+        </div>
+
+        <div class="input-group">
+          <label for="kelas-murid">🏫 Pilih Kelas</label>
+          <select id="kelas-murid" required>
+            <option value="" disabled selected>-- Pilih Kelasmu --</option>
+            <option value="Kelas 3 SD">Kelas 3 SD</option>
+            <option value="Kelas 4 SD">Kelas 4 SD</option>
+          </select>
+        </div>
+
+        <p id="login-error" class="login-error"></p>
+
+        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 8px;">
+          Masuk ke Kelas 🚀
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- HALAMAN 1: SAMBUTAN ANAK-ANAK -->
+  <section id="screen-welcome" class="screen">
+    <div class="card hero-card bounce-in">
+      <div class="floating-emoji">🕌✨🌟</div>
+      <span id="welcome-badge" class="badge">Kelas 3 SD</span>
+      <h1 id="welcome-title">Assalamu'alaikum, Adik-Adik Hebat!</h1>
+      <p class="subtitle">Selamat datang di dunia belajar Pendidikan Agama Islam. Yuk kita belajar sambil bermain bersama!</p>
+      <button class="btn btn-primary btn-lg" onclick="goToScreen('screen-doa')">
+        Mulai Belajar 🚀
+      </button>
+    </div>
+  </section>
+
+  <!-- HALAMAN 2: EKSKLUSIF DOA SEBELUM BELAJAR -->
+  <section id="screen-doa" class="screen">
+    <div class="card doa-card">
+      <span class="badge">Persiapan Hati</span>
+      <h2>🤲 Doa Sebelum Belajar</h2>
+      <p class="instruction">Yuk kita angkat tangan dan baca doa bersama sebelum masuk ke materi!</p>
+      
+      <div class="arabic-box">
+        <p class="arabic-text">رَضِيْتُ بِاللهِ رَبًّا، وَبِالْإِسْلَامِ دِيْنًا، وَبِمُحَمَّدٍ نَبِيًّا وَرَسُوْلًا. رَبِّ زِدْنِي عِلْمًا وَارْزُقْنِي فَهْمًا</p>
+        <p class="latin-text">
+          "Radhiitu billaahi rabbaa, wa bil-islaami diinaa, wa bi-muhammadin nabiyyaa wa rasuulaa. Rabbi zidnii 'ilmaa warzuqnii fahmaa."
+        </p>
+        <p class="meaning-text">
+          <strong>Artinya:</strong> "Aku ridha Allah sebagai Tuhanku, Islam sebagai agamaku, dan Nabi Muhammad sebagai Nabi dan Rasul. Ya Allah, tambahkanlah kepadaku ilmu dan berilah aku pemahaman yang baik."
+        </p>
+      </div>
+
+      <button class="btn btn-success btn-lg" onclick="goToScreen('screen-home')">
+        Aamiin, Yuk kita mulai belajar ➡️
+      </button>
+    </div>
+  </section>
+
+  <!-- HALAMAN 3: MENU UTAMA -->
+  <section id="screen-home" class="screen">
+    <header class="top-bar">
+      <div class="brand">🌟 <span id="header-student-info">Sahabat Cilik PAI</span></div>
+      <div class="top-actions">
+        <button class="btn-small" onclick="goToScreen('screen-doa')">🤲 Baca Doa</button>
+        <button class="btn-small btn-info" onclick="goToScreen('screen-tujuan')">🎯 Tujuan Belajar</button>
+        <button class="btn-small btn-logout" onclick="logout()">🚪 Keluar</button>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="welcome-banner">
+        <h2>Pilih Petualangan Belajarmu Hari Ini!</h2>
+        <p>Klik salah satu kartu di bawah ini untuk mulai belajar atau bermain.</p>
+      </div>
+
+      <div class="menu-grid">
+        <!-- Menu 1: Sejarah Nabi -->
+        <div class="menu-card card-green" onclick="openSejarah()">
+          <div class="menu-icon">📖</div>
+          <h3>Sejarah Nabi Muhammad SAW</h3>
+          <p>Pelajari 7 kisah teladan dari kelahiran hingga hijrah ke Madinah.</p>
+          <span class="pill">7 Bab Kisah</span>
+        </div>
+
+        <!-- Menu 2: Quiz -->
+        <div class="menu-card card-orange" onclick="openQuiz()">
+          <div class="menu-icon">🏆</div>
+          <h3>Quiz Cerdas Cermat</h3>
+          <p>Uji pemahamanmu tentang kisah Nabi dan dapatkan bintang nilai!</p>
+          <span class="pill">5 Soal Seru</span>
+        </div>
+
+        <!-- Menu 3: Permainan Edukatif -->
+        <div class="menu-card card-purple" onclick="openGame()">
+          <div class="menu-icon">🎮</div>
+          <h3>Permainan Edukatif</h3>
+          <p>Mainkan game tebak kata & susun istilah penting dalam Islam.</p>
+          <span class="pill">Mini Game</span>
+        </div>
+
+        <!-- Menu 4: Video Kisah Nabi Muhammad SAW (Link YouTube) -->
+        <a href="https://youtu.be/j5AwiRHX5BE?si=vbII1yf4JxLCLtg8" target="_blank" rel="noopener noreferrer" class="menu-card card-red link-card">
+          <div class="menu-icon">🎬</div>
+          <h3>Video Kisah Nabi Muhammad SAW</h3>
+          <p>Tonton video animasi kisah teladan Nabi Muhammad SAW di YouTube.</p>
+          <span class="pill">Buka YouTube ↗</span>
+        </a>
+
+      <!-- Keterangan Tujuan Pembelajaran Ringkas di Halaman Utama -->
+      <div class="tujuan-box-home">
+        <h3>🎯 Tujuan Pembelajaran</h3>
+        <ul>
+          <li>Mengenal dan meneladani sifat jujur (<em>Al-Amin</em>) serta kesabaran Nabi Muhammad SAW sejak kecil hingga berdakwah.</li>
+          <li>Memahami peristiwa penting turunnya wahyu pertama dan perjalanan hijrah umat Islam.</li>
+          <li>Membiasakan berdoa sebelum belajar dan menumbuhkan semangat belajar agama dengan cara yang menyenangkan.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- HALAMAN SUB-MENU: SEJARAH NABI MUHAMMAD SAW -->
+  <section id="screen-sejarah" class="screen">
+    <div class="container">
+      <button class="btn btn-back" onclick="goToScreen('screen-home')">⬅️ Kembali ke Menu Utama</button>
+      <h2 class="section-title">📖 Sejarah Nabi Muhammad SAW</h2>
+      <p class="section-desc">Pilih salah satu bab di bawah ini untuk membaca kisahnya:</p>
+
+      <div id="sejarah-list" class="bab-grid">
+        <p class="loading-text">Memuat kisah dari server Python...</p>
+      </div>
+
+      <!-- Kotak Pembaca Kisah -->
+      <div id="sejarah-reader" class="reader-card hidden">
+        <div class="reader-header">
+          <span id="reader-icon" class="reader-emoji">🌙</span>
+          <h3 id="reader-title">Judul Bab</h3>
+        </div>
+        <p id="reader-content" class="reader-body"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HALAMAN SUB-MENU: QUIZ INTERAKTIF -->
+  <section id="screen-quiz" class="screen">
+    <div class="container">
+      <button class="btn btn-back" onclick="goToScreen('screen-home')">⬅️ Kembali ke Menu Utama</button>
+      <div class="card quiz-card">
+        <h2>🏆 Quiz Cerdas Cermat PAI</h2>
+        <div id="quiz-container">
+          <p class="loading-text">Menyiapkan soal quiz...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HALAMAN SUB-MENU: PERMAINAN EDUKATIF -->
+  <section id="screen-game" class="screen">
+    <div class="container">
+      <button class="btn btn-back" onclick="goToScreen('screen-home')">⬅️ Kembali ke Menu Utama</button>
+      <div class="card game-card">
+        <h2>🎮 Game Tebak Kata Islami</h2>
+        <p>Susun huruf-huruf acak di bawah ini menjadi kata yang benar sesuai petunjuk!</p>
+        
+        <div class="game-clue-box">
+          <strong>Petunjuk:</strong> <span id="game-clue">Memuat petunjuk...</span>
+        </div>
+
+        <div id="answer-slots" class="word-slots"></div>
+        <div id="letter-bank" class="letter-buttons"></div>
+        <p id="game-feedback" class="feedback-msg"></p>
+
+        <div class="game-controls">
+          <button class="btn btn-small" onclick="resetCurrentWord()">🔄 Ulangi Kata</button>
+          <button class="btn btn-primary" onclick="nextWord()">Kata Berikutnya ➡️</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HALAMAN SUB-MENU: TUJUAN PEMBELAJARAN LENGKAP -->
+  <section id="screen-tujuan" class="screen">
+    <div class="container">
+      <button class="btn btn-back" onclick="goToScreen('screen-home')">⬅️ Kembali ke Menu Utama</button>
+      <div class="card tujuan-full-card">
+        <h2>🎯 Tujuan Pembelajaran (Kelas 3 & 4 SD)</h2>
+        <p>Setelah mengikuti seluruh rangkaian materi, kuis, dan permainan pada media pembelajaran ini, peserta didik diharapkan mampu:</p>
+        <ol class="tujuan-list">
+          <li><strong>Sikap Spiritual:</strong> Membiasakan diri membaca doa sebelum dan sesudah belajar dengan penuh kekhusyukan.</li>
+          <li><strong>Pengetahuan Sejarah:</strong> Menceritakan kembali secara runtut kisah kelahiran, masa kecil, gelar <em>Al-Amin</em>, wahyu pertama, dakwah, hingga hijrah Nabi Muhammad SAW.</li>
+          <li><strong>Sikap Sosial & Teladan:</strong> Meneladani sifat jujur, amanah, sabar, dan pantang menyerah dalam kehidupan sehari-hari di rumah maupun di sekolah.</li>
+          <li><strong>Evaluasi Mandiri:</strong> Mengukur pemahaman materi secara mandiri melalui kuis interaktif dan permainan edukatif.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
